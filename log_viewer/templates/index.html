@@ -1,0 +1,62 @@
+<!-- log_viewer/templates/index.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<link rel="shortcut icon" href="#">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XES Log Visualizer</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    {% load static tailwind_tags %}
+    {% tailwind_css %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.20.1/cytoscape.min.js"></script>
+    
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <h1 class="bg-green-500 text-white p-4 font-bold">XES Log Visual Tracer</h1>
+    <form id="logForm" method="post" class="p-4">
+        {% csrf_token %}
+        <!--if your example.xes in c:\example input c:\example\example.xes-->
+        <button id="traceBtn" title="Visualize by traces" class="transition ease-in-out delay-150 hover:bg-indigo-500 bg-green-500 text-white p-2 mb-2 rounded" disabled>Trace</button>
+        <button id="groupBtn" title="Visualize by group" class="transition ease-in-out delay-150 hover:bg-indigo-500 bg-green-500 text-white p-2 mb-2 rounded" disabled>Group</button>
+        <div class="p-2 mb-2 w-full grid grid-cols-2 gap-2">
+            <input type="text" name="logPath" id="logPath" placeholder="Enter path to XES log file" title="If your example.xes in c:\example input c:\example\example.xes" class="border rounded">
+            <select id="nodeSelect" name="nodeSelect" title="Select label for nodes" class="border rounded w-full">
+                <option value="event_name" selected>Event Name</option>
+                <option value="performer_name">Performer Name</option>
+                <option value="time_stamp">Time Stamp</option>
+            </select>
+        </div>
+        <div class="p-2 mb-2 w-full grid grid-cols-2 gap-2">
+            <select id="layoutSelect" name="layoutSelect" title="Select layout for graph" class="border rounded">
+                <option value="grid" selected>Grid</option>
+                <option value="random">Random</option>
+                <option value="circle">Circle</option>
+                <option value="concentric">Concentric</option>
+                <option value="breadthfirst">BreadthFirst</option>
+                <option value="cose">Cose</option>
+            </select>
+            <input type="text" name="indexInput" id="indexInput" title="Example : 1, 3 , 5-10" class="border rounded">
+        </div>
+        <div class="p-2 mb-2 w-full grid grid-cols-2 gap-2">
+            <select id="animationSelect" name="animationSelect" title="Select trace for animation" class="border rounded"></select>
+            <select id="groupSelect" name="groupSelect" title="Select traces group(Based on the order of work)" class="border rounded"></select>
+        </div>
+        <button type="submit" id="visualizeButton">Visualize</button>
+    </form>
+    <div class="flex space-x-2 p-4 pt-0">
+        <button id="startBtn" title="Start animation(After pressing this button, do not press it again until you press the stop button.)" class="transition ease-in-out delay-150 hover:bg-indigo-500 bg-blue-500 text-white p-2 rounded">Start</button>
+        <button id="pauseBtn" title="Pause animation(You can resume animation if you push start button)" class="transition ease-in-out delay-150 hover:bg-indigo-500 bg-yellow-500 text-white p-2 rounded">Pause</button>
+        <button id="stopBtn" title="Stop and Reset animation" class="transition ease-in-out delay-150 hover:bg-indigo-500 bg-red-500 text-white p-2 rounded">Stop</button>
+    </div>
+    <div class="p-2 mb-2 w-full grid grid-cols-2 gap-2">
+        <input type="text" name="groupIndexInput" id="groupIndexInput" title="Example : 1, 3 , 5-10" class="border rounded">
+        <select id="groupAnimationSelect" name="groupAnimationSelect" title="Select group for animation" class="border rounded"></select>
+    </div>
+    <label id="groupLabel" class="text-red-500 font-thin overflow-auto w-screen max-h-8 leading-none"></label>
+    <div id="graphContainer" class="flex-1 mt-4 overflow-auto"></div>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
